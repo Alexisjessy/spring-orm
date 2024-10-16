@@ -3,12 +3,12 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     FOR i IN 1..200 LOOP
-        INSERT INTO public.account (creationtime, balance, active, user_id)
+        INSERT INTO public.account (creationtime, balance, active, client_id)
         VALUES (
             current_timestamp,
             1000 * i,
             true,
-            (SELECT id FROM public."user" OFFSET floor(random() * (SELECT COUNT(*) FROM public."user")) LIMIT 1)
+            (SELECT id FROM public."client" OFFSET floor(random() * (SELECT COUNT(*) FROM public."client")) LIMIT 1)
         );
     END LOOP;
 END;

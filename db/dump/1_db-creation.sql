@@ -1,6 +1,8 @@
 
 DROP TABLE if exists public.account CASCADE;
 
+
+
 CREATE TABLE account (
 	id SERIAL PRIMARY KEY,
 	first_name VARCHAR(100),

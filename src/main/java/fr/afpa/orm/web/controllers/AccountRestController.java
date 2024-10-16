@@ -28,6 +28,8 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * TODO ajouter la/les annotations nécessaires pour faire de "AccountRestController" un contrôleur de REST API
  */
+@RestController
+@RequestMapping("/api/accounts")
 public class AccountRestController {
     /** 
      * TODO implémenter un constructeur
@@ -36,6 +38,8 @@ public class AccountRestController {
      * Plus d'informations -> https://keyboardplaying.fr/blogue/2021/01/spring-injection-constructeur/
      */
 
+@Autowired
+private AccountRepository accountRepository;
 
     /**
      * TODO implémenter une méthode qui traite les requêtes GET et qui renvoie une liste de comptes
@@ -54,8 +58,11 @@ public class AccountRestController {
      * Plus d'informations sur les variables de chemin -> https://www.baeldung.com/spring-pathvariable
      */
     @GetMapping("/{id}")
-    public ResponseEntity<????> getOne(@PathVariable long id) {
+    public ResponseEntity<Account> getOne(@PathVariable long id) {
         // TODO compléter le code
+        Optional<Account>account = accountService.findAccountById(id);
+        return account.map(ResponseEntity::ok).orElseGet(()-> ResponseEntity.notFound().build());
+
     }
 
     /**
@@ -66,8 +73,9 @@ public class AccountRestController {
      **/
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ???? create(@RequestBody Account account) {
+    public Account create(@RequestBody Account account) {
         // TODO compléter le code
+        return accountRepository.saveAccount(account);
     }
 
     /**
