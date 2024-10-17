@@ -18,8 +18,10 @@ public class Account {
     @Column(name = "creationtime", nullable = false)
     private LocalDateTime creationTime;
     @PrePersist
-    protected void onCreate() {
-        this.creationTime = LocalDateTime.now();
+    public void prePersist() {
+        if (this.creationTime == null) {
+            this.creationTime = LocalDateTime.now();
+        }
     }
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "client_id", nullable = true)

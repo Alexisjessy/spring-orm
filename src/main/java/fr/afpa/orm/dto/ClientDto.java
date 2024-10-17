@@ -10,7 +10,7 @@ public class ClientDto {
     private String email;
     private LocalDate birthday;
 
-    // Getters and Setters
+    
     public UUID getId() {
         return id;
     }

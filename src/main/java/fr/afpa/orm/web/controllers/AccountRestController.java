@@ -77,8 +77,7 @@ public class AccountRestController {
         } else {
             throw new RuntimeException("Client ID must be provided");  
         }
-        
-        // Enregistrer l'account avec le client associé
+      
         return accountRepository.save(account);
     }
     
@@ -92,24 +91,40 @@ public class AccountRestController {
      * @return Le compte mis à jour, ou un code 404 si le compte n'existe pas.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Account> update(@PathVariable long id, @RequestBody Account account) {
-        Optional<Account> existingAccount = accountRepository.findById(id);
-        if (existingAccount.isPresent()) {
-            if (account.getClient() != null && account.getClient().getId() != null) {
-                Optional<Client> client = clientRepository.findById(account.getClient().getId());
-                if (!client.isPresent()) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
-                }
-                account.setClient(client.get());
+public ResponseEntity<Account> update(@PathVariable long id, @RequestBody Account account) {
+    Optional<Account> existingAccount = accountRepository.findById(id);
+    if (existingAccount.isPresent()) {
+        Account currentAccount = existingAccount.get();
+        
+      
+        account.setCreationTime(currentAccount.getCreationTime());
+        
+       
+        if (account.getClient() != null && account.getClient().getId() != null) {
+            Optional<Client> client = clientRepository.findById(account.getClient().getId());
+            if (!client.isPresent()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Client not found");
             }
-            account.setId(id);  
-            Account updatedAccount = accountRepository.save(account);
-            return ResponseEntity.ok(updatedAccount);
-        } else {
-            return ResponseEntity.notFound().build();
+            account.setClient(client.get());
         }
-    }
 
+        account.setId(id);
+
+      
+        Account updatedAccount = accountRepository.save(account);
+        return ResponseEntity.ok(updatedAccount);
+    } else {
+        return ResponseEntity.notFound().build();
+    }
+}
+
+
+   // Find account by email
+//    @GetMapping("/email/{email}")
+//    public ResponseEntity<Account> getAccountByEmail(@PathVariable String email) {
+//        Optional<Account> account = accountRepository.findByEmail(email);
+//        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+//    }
     /**
      * Supprime un compte par son identifiant.
      *
