@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,7 +44,9 @@ public class Client {
     @JoinTable(
         name = "client_insurance", 
         joinColumns = @JoinColumn(name = "client_id"), 
+       
         inverseJoinColumns = @JoinColumn(name = "insurance_id") 
+         
     )
     private Set<Insurance> insurances = new HashSet<>();
 

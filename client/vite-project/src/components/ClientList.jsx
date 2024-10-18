@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; 
 
 function ClientList() {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/clients', {
-          params: {
-            page: 1,  
-            limit: 100 
-          },
-        });
+        const response = await axios.get('http://localhost:8000/api/clients');
+        console.log(response.data);
         setClients(response.data);
         setLoading(false);
       } catch (err) {
@@ -23,10 +19,9 @@ function ClientList() {
         setLoading(false);
       }
     };
-  
+
     fetchClients();
   }, []);
-  
 
   if (loading) {
     return <div className="text-center text-xl font-semibold">Loading clients...</div>;
@@ -60,11 +55,27 @@ function ClientList() {
           <tbody>
             {clients.length > 0 ? (
               clients.map((client) => (
-                <tr key={client.id} className="border-t">
-                  <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-900">{client.firstName}</td>
-                  <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-900">{client.lastName}</td>
-                  <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-900">{client.email}</td>
-                  <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-900">{client.birthday}</td>
+                <tr key={client.id} className="border-t cursor-pointer hover:bg-gray-100">
+                  <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-900">
+                    <Link to={`/clients/${client.id}/details`} className="block w-full h-full">
+                      {client.firstName}
+                    </Link>
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-900">
+                    <Link to={`/clients/${client.id}/details`} className="block w-full h-full">
+                      {client.lastName}
+                    </Link>
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-900">
+                    <Link to={`/clients/${client.id}/details`} className="block w-full h-full">
+                      {client.email}
+                    </Link>
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-900">
+                    <Link to={`/clients/${client.id}/details`} className="block w-full h-full">
+                      {client.birthday}
+                    </Link>
+                  </td>
                 </tr>
               ))
             ) : (

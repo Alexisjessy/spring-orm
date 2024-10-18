@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.afpa.orm.dto.AccountDto;
+import fr.afpa.orm.dto.ClientDetailsDto;
+import fr.afpa.orm.dto.ClientDto;
+import fr.afpa.orm.dto.InsuranceDto;
 import fr.afpa.orm.entities.Client;
 import fr.afpa.orm.entities.Insurance;
+import fr.afpa.orm.repositories.AccountRepository;
 import fr.afpa.orm.repositories.ClientRepository;
 import fr.afpa.orm.repositories.InsuranceRepository;
 
@@ -28,19 +34,54 @@ public class ClientRestController {
 
     private final ClientRepository clientRepository;
     private final InsuranceRepository insuranceRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public ClientRestController(ClientRepository clientRepository, InsuranceRepository insuranceRepository) {
+    public ClientRestController(ClientRepository clientRepository, AccountRepository accountRepository, InsuranceRepository insuranceRepository) {
         this.clientRepository = clientRepository;
+        this.accountRepository = accountRepository;
         this.insuranceRepository = insuranceRepository;
     }
+ @GetMapping("/{clientId}/details")
+    public ResponseEntity<ClientDetailsDto> getClientDetails(@PathVariable UUID clientId) {
+    
+        Optional<Client> clientOptional = clientRepository.findById(clientId);
+        if (!clientOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Client client = clientOptional.get();
 
-    // Endpoint GET pour récupérer la liste des clients
+        // Récupérer les comptes bancaires associés au client
+        List<AccountDto> accounts = accountRepository.findByClientId(clientId)
+                .stream()
+                .map(account -> new AccountDto(account.getId(), account.getBalance(), account.getCreationTime(), account.getClient().getId()))
+                .collect(Collectors.toList());
+
+        // Récupérer les assurances associées au client
+        List<InsuranceDto> insurances = insuranceRepository.findByClientsId(clientId)
+                .stream()
+                .map(insurance -> new InsuranceDto(insurance.getId(), insurance.getName()))
+                .collect(Collectors.toList());
+
+        // Créer le DTO combiné
+        ClientDetailsDto clientDetailsDto = new ClientDetailsDto(
+                client.getId(),
+                client.getFirstName(),
+                client.getLastName(),
+                client.getEmail(),
+                client.getBirthday(),
+                accounts,
+                insurances
+        );
+
+        return ResponseEntity.ok(clientDetailsDto);
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Client> getAllClients() {
-       
+    public List<ClientDto> getAllClients() {
         return StreamSupport.stream(clientRepository.findAll().spliterator(), false)
+                .map(client -> new ClientDto(client.getId(), client.getFirstName(), client.getLastName(), client.getEmail(), client.getBirthday()))
                 .collect(Collectors.toList());
     }
       // Endpoint GET pour récupérer les assurances d'un client spécifique

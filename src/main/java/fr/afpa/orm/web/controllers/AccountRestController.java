@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import fr.afpa.orm.dto.AccountDto;
 import fr.afpa.orm.entities.Account;
 import fr.afpa.orm.entities.Client;
 import fr.afpa.orm.repositories.AccountRepository;
@@ -34,14 +35,20 @@ public class AccountRestController {
         this.clientRepository = clientRepository;
     }
 
-    /**
-     * Récupère tous les comptes.
+   /**
+     * Récupère tous les comptes et renvoie des DTOs.
      *
-     * @return Liste de tous les comptes.
+     * @return Liste de tous les comptes au format DTO.
      */
     @GetMapping
-    public List<Account> getAll() {
+    public List<AccountDto> getAll() {
         return StreamSupport.stream(accountRepository.findAll().spliterator(), false)
+                .map(account -> new AccountDto(
+                    account.getId(), 
+                    account.getBalance(), 
+                    account.getCreationTime(), 
+                    account.getClient() != null ? account.getClient().getId() : null 
+                ))
                 .collect(Collectors.toList());
     }
 
