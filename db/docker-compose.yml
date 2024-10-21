@@ -4,7 +4,7 @@ services:
     container_name: account-db
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=
+      - POSTGRES_PASSWORD=test
       
       - POSTGRES_DB=account
     logging: # option de paramétrage des logs

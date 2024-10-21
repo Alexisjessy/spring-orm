@@ -1,26 +1,42 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 function AddClient() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [birthday, setBirthday] = useState('');
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccessMessage('');
     try {
       const response = await axios.post('http://localhost:8000/api/clients', {
         firstName: firstName,
         lastName: lastName,
         email: email,
         birthday: birthday,
-        
+
       });
+      if (response.status === 201) {
+        setSuccessMessage('Ajout de client réussi ! Redirection vers la page liste client...');
+        setTimeout(() => {
+          navigate('/client');
+        }, 2000);
+      }
       console.log('Client added:', response.data);
     } catch (error) {
-      console.error('Error adding client:', error);
-    
+      console.error('Erreur lors de l’inscription:', error);
+
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError("Une erreur s'est produite. Veuillez réessayer.");
+      }
     }
   };
 
@@ -28,6 +44,9 @@ function AddClient() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6 space-y-6">
         <h1 className="text-3xl font-semibold text-center text-indigo-600">Add New Client</h1>
+        {error && <p className="text-red-500 mb-3">{error}</p>}
+        {successMessage && <p className="text-green-500 mb-3">{successMessage}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">First Name</label>

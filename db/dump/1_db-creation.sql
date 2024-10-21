@@ -26,3 +26,18 @@ CREATE TABLE client (
     birthday DATE,                     
     creationTime TIMESTAMP DEFAULT NOW() 
 );
+
+CREATE TABLE insurance (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(255) NOT NULL,
+	CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCEs client(id) ON DELETE CASCADE,
+
+);
+
+TABLE client_insurance (
+	client_id UUID,
+	insurance_id INT,
+	PRIMARY KEY (client_id,insurance_id),
+	CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE,
+	CONSTRAINT fk_insurance FOREIGN KEY (insurance_id) REFERENCES insurance(id) ON DELETE CASCADE
+)

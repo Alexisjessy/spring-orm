@@ -10,16 +10,7 @@ function Home() {
   return (
     <div className="text-center mt-10">
       <h1 className="text-3xl font-bold">Welcome to Client Management</h1>
-      <p className="text-lg mt-4">Navigate to add a new client.</p>
-      <Link to="/add-client" className="mt-6 inline-block px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-        Add New Client
-      </Link>
-      <Link to="/client" className="mt-6 inline-block px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-         Client
-      </Link>
-      <Link to="/accounts" className="mt-6 inline-block px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-         comptes bancaires
-      </Link>
+      
     </div>
   );
 }
@@ -27,6 +18,25 @@ function Home() {
 function App() {
   return (
     <Router>
+        <div className="container mx-auto mt-5">
+      <nav className="flex justify-between items-center p-5 bg-gray-100 shadow-md rounded-lg mb-4">
+  <div className="flex space-x-4">
+    <Link to="/" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+     Home
+    </Link>
+    <Link to="/add-client" className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+        Add New Client
+      </Link>
+      <Link to="/client" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+         Client
+      </Link>
+      <Link to="/accounts" className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+         comptes bancaires
+      </Link>
+     
+    </div>
+          </nav>
+          </div>
       <div>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -34,8 +44,10 @@ function App() {
           <Route path="/accounts" element={<ClientBankAccounts />} />
           <Route path="/client" element={<ClientList />} />
           <Route path="/clients/:clientId/details" element={<ClientDetail />} />
+          
         </Routes>
       </div>
+      
     </Router>
   );
 }
