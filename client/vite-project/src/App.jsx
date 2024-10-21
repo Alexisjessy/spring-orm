@@ -10,7 +10,8 @@ function Home() {
   return (
     <div className="text-center mt-10">
       <h1 className="text-3xl font-bold">Welcome to Client Management</h1>
-      
+
+      <img src="https://i.kinja-img.com/gawker-media/image/upload/s--1IbYcQm2--/c_fill,fl_progressive,g_center,h_900,q_80,w_1600/zj42kn2xzlivgllfpa2u.jpg"/> 
     </div>
   );
 }
