@@ -55,8 +55,8 @@ export const AuthProvider = ({ children }) => {
   // Fonction pour gérer la déconnexion
   const logout = async () => {
     try {
-      await apiClient.post('/users/logout');
-      localStorage.removeItem('xsrfToken'); 
+      await apiClient.post('/auth/logout');
+      localStorage.removeItem('token'); 
       setUser(null); 
       console.log('Déconnexion réussie');
     } catch (error) {

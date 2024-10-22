@@ -29,6 +29,7 @@ import fr.afpa.orm.entities.Insurance;
 import fr.afpa.orm.repositories.AccountRepository;
 import fr.afpa.orm.repositories.ClientRepository;
 import fr.afpa.orm.repositories.InsuranceRepository;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -47,6 +48,7 @@ public class ClientRestController {
     }
 
     @GetMapping("/{clientId}/details")
+    @Transactional
     public ResponseEntity<ClientDetailsDto> getClientDetails(@PathVariable UUID clientId) {
 
         Optional<Client> clientOptional = clientRepository.findById(clientId);

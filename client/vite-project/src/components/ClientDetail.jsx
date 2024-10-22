@@ -71,17 +71,7 @@ function ClientDetails() {
        
         
       });
-      const token = localStorage.getItem('token');
-      apiClient.interceptors.request.use(config => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
-        }
-        return config;
-    }, (error) => {
-        console.error('Erreur lors de l\'envoi de la requête:', error);
-        return Promise.reject(error);
-    });
+     
       if (response.status === 201) {
         setSuccessMessage('Ajout d\'assurance réussi !');
         setTimeout(() => {

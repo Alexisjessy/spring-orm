@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 
 const LogoutButton = () => {
-  const { logout } = useContext(AuthContext); // Récupérer la fonction logout depuis AuthContext
+  const { logout } = useContext(AuthContext); 
 
   const handleLogout = async () => {
     try {
-      await logout(); // Utiliser la fonction logout
+      await logout(); 
       alert('Déconnexion réussie !');
     } catch (error) {
       console.error('Erreur lors de la déconnexion', error);

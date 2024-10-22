@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +34,7 @@ public class Insurance {
     private String name;
 
     
-    @ManyToMany(mappedBy = "insurances")
+    @ManyToMany(mappedBy = "insurances", fetch = FetchType.EAGER)
     private Set<Client> clients = new HashSet<>();
 
     public Long getId() {

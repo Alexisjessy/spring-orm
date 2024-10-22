@@ -11,13 +11,14 @@ const apiClient = axios.create({
 
 
 apiClient.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('Token');
   if (token) {
-    config.Authorization['token'] = token;
+    config.headers['Authorization'] = `Bearer ${token}`;
   }
   return config;
 }, (error) => {
   console.error('Erreur lors de l\'envoi de la requête:', error);
   return Promise.reject(error);
 });
+
 export default apiClient;
