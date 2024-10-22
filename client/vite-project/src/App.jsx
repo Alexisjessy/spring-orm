@@ -1,11 +1,14 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useContext,useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes,Link } from 'react-router-dom';
 import AddClient from './components/AddClient';
 import ClientList from './components/ClientList';
+import SingnIn from './components/SignIn';
+import Login from './components/Login';
 import ClientBankAccounts from './components/ClientBankAccounts';
 import ClientDetail from './components/ClientDetail';
-import { Link } from 'react-router-dom';
 
+import { AuthContext } from './components/AuthContext';
+import LogoutButton from './components/LogoutButton'; 
 function Home() {
   return (
     <div className="text-center mt-10">
@@ -17,6 +20,14 @@ function Home() {
 }
 
 function App() {
+  const { user, loading ,logout,login } = useContext(AuthContext); 
+  useEffect(() => {
+    console.log('L\'utilisateur a changé:', user);
+  }, [user]);
+  if (loading) {
+    return <div>Chargement...</div>; 
+  }
+
   return (
     <Router>
         <div className="container mx-auto mt-5">
@@ -34,17 +45,34 @@ function App() {
       <Link to="/accounts" className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600">
          comptes bancaires
       </Link>
-     
+
+      <div className="flex space-x-4">
+    {user ? ( 
+      <LogoutButton />
+    ) : ( 
+      <>
+        <Link to="/auth" className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+       Register
+      </Link>
+      <Link to="/auth/login" className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+       Login
+      </Link>
+      </>
+    )}
+  </div>
+      
     </div>
+    
           </nav>
-          </div>
-      <div>
+       
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/add-client" element={<AddClient />} />
           <Route path="/accounts" element={<ClientBankAccounts />} />
           <Route path="/client" element={<ClientList />} />
-          <Route path="/clients/:clientId/details" element={<ClientDetail />} />
+          <Route path="/auth" element={<SingnIn />} />
+          <Route path="/auth/login" element={<Login/>} />
+          <Route path="/clients/:clientId/details" element={<ClientDetail/>}/>
           
         </Routes>
       </div>

@@ -128,24 +128,27 @@ function ClientList() {
           </table>
         </div>
       </div>
-      <Modal
+      <Modal className="w-screen h-screen bg-black bg-opacity-30 fixed top-0 right-0 flex justify-center items-center"
+      
         isOpen={isConfirmationModalOpen}
         onRequestClose={closeModal}
         contentLabel="Confirmation Modal"
-      >
-        <h2>Confirm Delete Client</h2>
+      >  <div className='bg-white p-10 rounded-md shadow-md'>
+        <h2 className='font-bold text-center text-lg my-5'>Confirm Delete Client</h2>
+        
         <button
-          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+          className="outline outline-1 outline-[#101f20] bg-[#101f20] text-white py-2 px-4 hover:bg-transparent hover:text-black"
           onClick={confirmDelete}
         >
           Yes
         </button>
         <button
-          className="bg-red-500 text-white font-bold py-2 px-4 rounded ml-4"
+          className="bg-red-500 text-white font-bold py-2 px-4 rounded ml-4 hover:bg-[#b91c1c]"
           onClick={closeModal}
         >
           No
         </button>
+        </div>
       </Modal>
     </section>
   );

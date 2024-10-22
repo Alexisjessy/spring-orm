@@ -8,15 +8,19 @@ import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import fr.afpa.orm.dto.AccountDto;
 import fr.afpa.orm.entities.Account;
 import fr.afpa.orm.entities.Client;
+import fr.afpa.orm.entities.User;
 import fr.afpa.orm.repositories.AccountRepository;
 import fr.afpa.orm.repositories.ClientRepository;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -60,6 +64,8 @@ public class AccountRestController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Account> getOne(@PathVariable long id) {
+         
+
         Optional<Account> account = accountRepository.findById(id);
         return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

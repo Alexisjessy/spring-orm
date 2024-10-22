@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-
+import apiClient from './apiClient';
 function ClientDetails() {
   const { clientId } = useParams(); 
   const [clientDetails, setClientDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-  const [enumInsurance, setEnumInsurance] = useState('');  // État pour stocker la sélection d'assurance
+  const [enumInsurance, setEnumInsurance] = useState('');  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,12 +63,25 @@ function ClientDetails() {
 
   // Fonction pour ajouter une assurance
   const addInsurance = async (e) => {
-    e.preventDefault(); // Empêche la soumission par défaut du formulaire
+    e.preventDefault(); 
     try {
+     
       const response = await axios.post(`http://localhost:8000/api/clients/${clientId}/insurances`, {
-        name: enumInsurance, 
+        name: enumInsurance,
+       
+        
       });
-
+      const token = localStorage.getItem('token');
+      apiClient.interceptors.request.use(config => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    }, (error) => {
+        console.error('Erreur lors de l\'envoi de la requête:', error);
+        return Promise.reject(error);
+    });
       if (response.status === 201) {
         setSuccessMessage('Ajout d\'assurance réussi !');
         setTimeout(() => {
