@@ -8,7 +8,7 @@ function ClientDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-  const [enumInsurance, setEnumInsurance] = useState('');  
+  const [name, setName] = useState('');  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -67,11 +67,20 @@ function ClientDetails() {
     try {
      
       const response = await axios.post(`http://localhost:8000/api/clients/${clientId}/insurances`, {
-        name: enumInsurance,
-       
+        name: name,
         
       });
-     
+      apiClient.interceptors.request.use(config => {
+        const token = localStorage.getItem('Token');
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+         
+        }
+        return config;
+      }, (error) => {
+        console.error('Erreur lors de l\'envoi de la requête:', error);
+        return Promise.reject(error);
+      });
       if (response.status === 201) {
         setSuccessMessage('Ajout d\'assurance réussi !');
         setTimeout(() => {
@@ -115,8 +124,8 @@ function ClientDetails() {
           <div>
             <label className="block text-sm font-medium text-gray-700">ADD INSURANCE</label>
             <select
-              value={enumInsurance} 
-              onChange={(e) => setEnumInsurance(e.target.value)} 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
               className="block w-full p-2 border border-gray-300 rounded-md"
               required
             >

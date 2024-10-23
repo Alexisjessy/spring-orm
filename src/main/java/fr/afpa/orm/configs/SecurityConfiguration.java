@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -37,10 +38,9 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-            .cors() // Enable CORS
+            .cors() 
             .and()
             .authorizeHttpRequests(authorize -> authorize
-                // Public endpoints
                 .requestMatchers("/", "/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/accounts/**").permitAll()
@@ -49,14 +49,15 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.GET, "/api/clients/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/clients/*/insurances").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/logout/").permitAll()
-                // Private endpoints
+                .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No session management
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
             )
-            .authenticationProvider(authenticationProvider) // Set the authentication provider
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
+            .authenticationProvider(authenticationProvider) 
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); 
 
         return http.build();
     }
@@ -64,13 +65,14 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Update with your frontend origin
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of("*"));
+        // configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true); // Enable credentials if needed
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // configuration.setAllowCredentials(true); 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply CORS settings to all endpoints
+        source.registerCorsConfiguration("/**", configuration); 
         return source;
     }
 }
