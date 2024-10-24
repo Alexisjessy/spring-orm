@@ -1,7 +1,6 @@
-
 import React, { createContext, useState, useEffect } from 'react';
 import apiClient from './apiClient';
-
+import axios from './apiClient'
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -11,8 +10,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkUserAuth = async () => {
       try {
-        const userData = await checkAuth(); 
+        const userData = await checkAuth();
         setUser(userData);
+        console.log('Utilisateur authentifié:', userData);
       } catch (error) {
         console.log('Utilisateur non authentifié', error);
       } finally {
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
       const response = await apiClient.post('/auth/login', { email, password });
       const { token } = response.data;
       if (token) {
-        localStorage.setItem('Token', token);
+        localStorage.setItem('token', token);
         console.log('Token sauvegardé dans localStorage:', token);
       }
       setUser(response.data.user);
@@ -39,26 +39,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Fonction pour vérifier l'authentification
   const checkAuth = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('Aucun token trouvé dans localStorage');
+      setUser(null);
+      return null;
+    }
+
     try {
       const response = await apiClient.get('/users/me');
       setUser(response.data.user);
+      console.log('Données de l\'utilisateur:', response.data.user);
       return response.data;
     } catch (error) {
       console.error('Erreur lors de la vérification de l\'authentification', error);
       setUser(null);
+      localStorage.removeItem('token');
       throw error;
     }
   };
 
-  // Fonction pour gérer la déconnexion
   const logout = async () => {
     try {
       await apiClient.post('/auth/logout');
-      const token = localStorage.getItem('Token');
-      localStorage.removeItem('Token'); 
-      setUser(null); 
+      localStorage.removeItem('token');
+      setUser(null);
       console.log('Déconnexion réussie');
     } catch (error) {
       console.error('Erreur lors de la déconnexion', error);

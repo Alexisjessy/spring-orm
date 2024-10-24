@@ -6,6 +6,7 @@ import SingnIn from './components/SignIn';
 import Login from './components/Login';
 import ClientBankAccounts from './components/ClientBankAccounts';
 import ClientDetail from './components/ClientDetail';
+import { AuthProvider } from './components/AuthContext'
 
 import { AuthContext } from './components/AuthContext';
 import LogoutButton from './components/LogoutButton'; 
@@ -29,6 +30,7 @@ function App() {
   }
 
   return (
+  
     <Router>
         <div className="container mx-auto mt-5">
       <nav className="flex justify-between items-center p-5 bg-gray-100 shadow-md rounded-lg mb-4">
@@ -75,9 +77,11 @@ function App() {
           <Route path="/clients/:clientId/details" element={<ClientDetail/>}/>
           
         </Routes>
+        
       </div>
       
     </Router>
+ 
   );
 }
 

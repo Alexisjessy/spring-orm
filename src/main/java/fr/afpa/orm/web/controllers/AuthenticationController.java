@@ -45,10 +45,8 @@ public class AuthenticationController {
     }
     @PostMapping("/logout")
     public ResponseEntity<Void> logout() {
-        // Logic to invalidate the token or handle logout
-        // If using JWT, consider a blacklist or a token expiry strategy
-        // Here, we simply return a response since JWT doesn't have a server-side session
+        
 
-        return ResponseEntity.ok().build(); // Respond with a 200 OK status
+        return ResponseEntity.ok().build(); 
     }
 }

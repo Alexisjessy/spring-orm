@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
+import apiClient from './apiClient'; 
 
 function ClientList() {
   const [clients, setClients] = useState([]);
@@ -10,10 +10,11 @@ function ClientList() {
   const [isConfirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [selectedClient, setSelectedClient] = useState(null);
 
+
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/clients');
+        const response = await apiClient.get('/api/clients');  
         setClients(response.data);
         setLoading(false);
       } catch (err) {
@@ -34,7 +35,6 @@ function ClientList() {
   }
 
   const handleDelete = (clientId) => {
-  
     setSelectedClient(clientId);
     setConfirmationModalOpen(true);
   };
@@ -42,9 +42,8 @@ function ClientList() {
   const confirmDelete = async () => {
     if (selectedClient) {
       try {
-       
-        await axios.delete(`http://localhost:8000/api/clients/${selectedClient}`);
-     
+        
+        await apiClient.delete(`/clients/${selectedClient}`);
         setClients(clients.filter((client) => client.id !== selectedClient));
         setConfirmationModalOpen(false);
       } catch (error) {
@@ -128,26 +127,27 @@ function ClientList() {
           </table>
         </div>
       </div>
-      <Modal className="w-screen h-screen bg-black bg-opacity-30 fixed top-0 right-0 flex justify-center items-center"
-      
+
+      <Modal
+        className="w-screen h-screen bg-black bg-opacity-30 fixed top-0 right-0 flex justify-center items-center"
         isOpen={isConfirmationModalOpen}
         onRequestClose={closeModal}
         contentLabel="Confirmation Modal"
-      >  <div className='bg-white p-10 rounded-md shadow-md'>
-        <h2 className='font-bold text-center text-lg my-5'>Confirm Delete Client</h2>
-        
-        <button
-          className="outline outline-1 outline-[#101f20] bg-[#101f20] text-white py-2 px-4 hover:bg-transparent hover:text-black"
-          onClick={confirmDelete}
-        >
-          Yes
-        </button>
-        <button
-          className="bg-red-500 text-white font-bold py-2 px-4 rounded ml-4 hover:bg-[#b91c1c]"
-          onClick={closeModal}
-        >
-          No
-        </button>
+      >
+        <div className="bg-white p-10 rounded-md shadow-md">
+          <h2 className="font-bold text-center text-lg my-5">Confirm Delete Client</h2>
+          <button
+            className="outline outline-1 outline-[#101f20] bg-[#101f20] text-white py-2 px-4 hover:bg-transparent hover:text-black"
+            onClick={confirmDelete}
+          >
+            Yes
+          </button>
+          <button
+            className="bg-red-500 text-white font-bold py-2 px-4 rounded ml-4 hover:bg-[#b91c1c]"
+            onClick={closeModal}
+          >
+            No
+          </button>
         </div>
       </Modal>
     </section>

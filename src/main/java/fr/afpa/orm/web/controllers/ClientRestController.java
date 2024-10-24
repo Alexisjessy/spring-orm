@@ -11,6 +11,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,7 +49,7 @@ public class ClientRestController {
         this.accountRepository = accountRepository;
         this.insuranceRepository = insuranceRepository;
     }
-
+     @PreAuthorize("hasRole('USER')")
     @GetMapping("/{clientId}/details")
     @Transactional
     public ResponseEntity<ClientDetailsDto> getClientDetails(@PathVariable UUID clientId) {
@@ -83,7 +85,7 @@ public class ClientRestController {
 
         return ResponseEntity.ok(clientDetailsDto);
     }
-
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ClientDto> getAllClients() {

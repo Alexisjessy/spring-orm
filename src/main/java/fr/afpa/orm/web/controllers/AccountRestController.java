@@ -44,6 +44,7 @@ public class AccountRestController {
      *
      * @return Liste de tous les comptes au format DTO.
      */
+    // @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     public List<AccountDto> getAll() {
         return StreamSupport.stream(accountRepository.findAll().spliterator(), false)
