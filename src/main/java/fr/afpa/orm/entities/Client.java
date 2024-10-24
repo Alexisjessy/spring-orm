@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -49,6 +52,7 @@ public class Client {
         inverseJoinColumns = @JoinColumn(name = "insurance_id") 
          
     )
+      @Fetch(FetchMode.JOIN)
     private Set<Insurance> insurances = new HashSet<>();
 
     @JsonIgnore

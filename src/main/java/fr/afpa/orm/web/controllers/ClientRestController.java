@@ -1,5 +1,6 @@
 package fr.afpa.orm.web.controllers;
 
+import java.lang.foreign.Linker.Option;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -10,6 +11,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +49,7 @@ public class ClientRestController {
         this.accountRepository = accountRepository;
         this.insuranceRepository = insuranceRepository;
     }
-
+     @PreAuthorize("hasRole('USER')")
     @GetMapping("/{clientId}/details")
     @Transactional
     public ResponseEntity<ClientDetailsDto> getClientDetails(@PathVariable UUID clientId) {
@@ -65,10 +68,10 @@ public class ClientRestController {
                 .collect(Collectors.toList());
 
         // Récupérer les assurances associées au client
-        List<InsuranceDto> insurances = insuranceRepository.findByClientsId(clientId)
-                .stream()
-                .map(insurance -> new InsuranceDto(insurance.getId(), insurance.getName()))
-                .collect(Collectors.toList());
+        List<InsuranceDto> insurances = client.getInsurances()
+                                                .stream()
+                                                .map(insurance -> new InsuranceDto(insurance.getId(), insurance.getName()))
+                                                .collect(Collectors.toList());
 
         // Créer le DTO combiné
         ClientDetailsDto clientDetailsDto = new ClientDetailsDto(
@@ -82,7 +85,7 @@ public class ClientRestController {
 
         return ResponseEntity.ok(clientDetailsDto);
     }
-
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ClientDto> getAllClients() {
@@ -94,21 +97,48 @@ public class ClientRestController {
 
     // Endpoint GET pour récupérer les assurances d'un client spécifique
     @GetMapping("/{id}/insurances")
+    @Transactional
     public ResponseEntity<Set<Insurance>> getClientInsurances(@PathVariable UUID id) {
+        
         return clientRepository.findById(id)
                 .map(client -> ResponseEntity.ok(client.getInsurances()))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/{id}/insurances")
-    public ResponseEntity<Client> addInsuranceToClient(@PathVariable UUID id, @RequestBody Insurance insurance) {
-        return clientRepository.findById(id).map(client -> {
+    public ResponseEntity<Client> addInsuranceToClient(@PathVariable UUID id, @RequestBody Insurance insurancePost) {
+        
+        // 1 récupération du client en base de données
+        Optional<Client> clientDb = clientRepository.findById(id);
 
-            Insurance savedInsurance = insuranceRepository.save(insurance);
-            client.getInsurances().add(savedInsurance);
-            clientRepository.save(client);
-            return ResponseEntity.ok(client);
-        }).orElse(ResponseEntity.notFound().build());
+        if (clientDb.isPresent()) {
+            // clien bien retrouvé, on va essayer de le mettre à jour avec la nouvelle assurance
+            
+            // récupération du client à partir du "Optional"
+            Client client = clientDb.get();
+
+            // récupérer l'assurance de la BDD en fonction de son nom
+            Optional<Insurance> insuranceDb = insuranceRepository.findByName(insurancePost.getName());
+
+            if (insuranceDb.isPresent()) {
+                // possible de mettre à jour le lien entre un client et son assurance (--> ajouter un enregistrement dans la table de jointure)
+                Insurance insurance = insuranceDb.get();
+                client.getInsurances().add(insurance);
+                clientRepository.save(client);
+
+                return ResponseEntity.ok(client);
+            }
+
+        }
+
+        return ResponseEntity.notFound().build();
+        // return clientRepository.findById(id).map(client -> {
+
+        //     Insurance insuranceDb = insuranceRepository.findByName(insurance.getName());
+        //     client.getInsurances().add(savedInsurance);
+        //     clientRepository.save(client);
+        //     return ResponseEntity.ok(client);
+        // }).orElse();
     }
 
     // Endpoint POST pour ajouter un nouveau client

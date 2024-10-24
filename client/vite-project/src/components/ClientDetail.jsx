@@ -1,30 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import apiClient from './apiClient';
+import { useParams, useNavigate } from 'react-router-dom';
+import apiClient from './apiClient'; 
+
 function ClientDetails() {
   const { clientId } = useParams(); 
   const [clientDetails, setClientDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-  const [enumInsurance, setEnumInsurance] = useState('');  
+  const [name, setName] = useState('');  
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/clients/${clientId}/details`);
+        const response = await apiClient.get(`/api/clients/${clientId}/details`);
         setClientDetails(response.data);
         setLoading(false);
       } catch (err) {
-        setError('Error fetching client details');
+        if (err.response && err.response.status === 401) {
+          setError('Unauthorized access. Please log in.');
+          navigate('/login');
+        } else {
+          setError('Error fetching client details');
+        }
         setLoading(false);
       }
     };
 
     fetchClientDetails();
-  }, [clientId]);
+  }, [clientId, navigate]);
 
   if (loading) {
     return <div className="text-center text-xl font-semibold">Loading client details...</div>;
@@ -34,61 +39,57 @@ function ClientDetails() {
     return <div className="text-center text-red-500 text-xl">{error}</div>;
   }
 
-  // Fonction pour ajouter un compte
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/accounts', {
+      const response = await apiClient.post('http://localhost:8000/api/accounts', {
         balance: 0,
         client: {
-          id: clientId,  
+          id: clientId,
         },
       });
-
+  
       if (response.status === 201) {
         setSuccessMessage('Ajout de compte client réussi ! Redirection vers la page liste client...');
         setTimeout(() => {
           navigate('/client');
         }, 2000);
-      }
-      console.log('Compte ajouté :', response.data);
-    } catch (error) {
-      console.error('Erreur lors de l’ajout de compte :', error);
-      if (error.response && error.response.data && error.response.data.message) {
-        setError(error.response.data.message);
       } else {
-        setError("Une erreur s'est produite. Veuillez réessayer.");
+        setError('Erreur lors de l\'ajout du compte. Vérifiez les informations.');
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(`Une erreur s'est produite : ${error.response.data.message}`);
+      } else {
+        setError('Une erreur s\'est produite lors de l\'ajout du compte.');
       }
     }
   };
-
-  // Fonction pour ajouter une assurance
+  
   const addInsurance = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     try {
-     
-      const response = await axios.post(`http://localhost:8000/api/clients/${clientId}/insurances`, {
-        name: enumInsurance,
-       
-        
+      const response = await apiClient.post(`http://localhost:8000/api/clients/${clientId}/insurances`, {
+        name: name,
       });
-     
+  
       if (response.status === 201) {
         setSuccessMessage('Ajout d\'assurance réussi !');
         setTimeout(() => {
           navigate('/client');
         }, 2000);
-      }
-      console.log('Assurance ajoutée :', response.data);
-    } catch (error) {
-      console.error('Erreur lors de l’ajout d’assurance :', error);
-      if (error.response && error.response.data && error.response.data.message) {
-        setError(error.response.data.message);
       } else {
-        setError("Une erreur s'est produite. Veuillez réessayer.");
+        setError('Erreur lors de l\'ajout de l\'assurance. Vérifiez les informations.');
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(`Erreur lors de l'ajout de l'assurance : ${error.response.data.message}`);
+      } else {
+        setError('Une erreur s\'est produite lors de l\'ajout d\'assurance.');
       }
     }
   };
-
+  
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-4xl bg-white shadow-md rounded-lg p-6">
@@ -115,8 +116,8 @@ function ClientDetails() {
           <div>
             <label className="block text-sm font-medium text-gray-700">ADD INSURANCE</label>
             <select
-              value={enumInsurance} 
-              onChange={(e) => setEnumInsurance(e.target.value)} 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
               className="block w-full p-2 border border-gray-300 rounded-md"
               required
             >

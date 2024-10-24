@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom'; 
-
+import apiClient from './apiClient';
 function ClientBankAccounts() {
   const { clientId } = useParams(); 
   const [accounts, setAccounts] = useState([]);
@@ -11,7 +11,7 @@ function ClientBankAccounts() {
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/accounts`);
+        const response = await  apiClient.get(`http://localhost:8000/api/accounts`);
         setAccounts(response.data);
         setLoading(false);
       } catch (err) {

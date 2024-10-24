@@ -3,6 +3,10 @@ package fr.afpa.orm.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +38,8 @@ public class Insurance {
     private String name;
 
     
-    @ManyToMany(mappedBy = "insurances", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "insurances", fetch = FetchType.EAGER,cascade = CascadeType.ALL )
+     @Fetch(FetchMode.JOIN)
     private Set<Client> clients = new HashSet<>();
 
     public Long getId() {
