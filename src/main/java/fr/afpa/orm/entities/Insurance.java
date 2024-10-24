@@ -3,9 +3,17 @@ package fr.afpa.orm.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+<<<<<<< HEAD
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+=======
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+>>>>>>> 0f9a292d2045b83a746bf1b2bda385d1385bf3c8
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,7 +31,6 @@ public class Insurance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Enum représentant les types d'assurance
     public enum InsuranceName {
         HABITATION,
         SANTE,
@@ -33,13 +40,18 @@ public class Insurance {
         RESPONSABILITE_CIVILE_PERSONNELLE,
         RESPONSABILITE_CIVILE_PROFESSIONNELLE
     }
-
-    // Stocke le type d'assurance dans la colonne 'name'
+    
     private String name;
 
+<<<<<<< HEAD
     
     @ManyToMany(mappedBy = "insurances", fetch = FetchType.EAGER,cascade = CascadeType.ALL )
      @Fetch(FetchMode.JOIN)
+=======
+    @JsonIgnore
+    @ManyToMany(mappedBy = "insurances",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+>>>>>>> 0f9a292d2045b83a746bf1b2bda385d1385bf3c8
     private Set<Client> clients = new HashSet<>();
 
     public Long getId() {

@@ -12,6 +12,7 @@ import org.hibernate.annotations.FetchMode;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +27,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="client")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Client {
 
     @Id
@@ -52,11 +54,15 @@ public class Client {
         inverseJoinColumns = @JoinColumn(name = "insurance_id") 
          
     )
+<<<<<<< HEAD
       @Fetch(FetchMode.JOIN)
+=======
+    @Fetch(FetchMode.JOIN)
+>>>>>>> 0f9a292d2045b83a746bf1b2bda385d1385bf3c8
     private Set<Insurance> insurances = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "client",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Account> accounts;
 
   

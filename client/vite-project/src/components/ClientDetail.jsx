@@ -9,6 +9,7 @@ function ClientDetails() {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [name, setName] = useState('');  
+  const [name, setName] = useState('');  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -116,6 +117,8 @@ function ClientDetails() {
           <div>
             <label className="block text-sm font-medium text-gray-700">ADD INSURANCE</label>
             <select
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
               value={name} 
               onChange={(e) => setName(e.target.value)} 
               className="block w-full p-2 border border-gray-300 rounded-md"

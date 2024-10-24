@@ -21,7 +21,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+<<<<<<< HEAD
 import io.jsonwebtoken.lang.Arrays;
+=======
+import java.util.Arrays;
+import java.util.List;
+>>>>>>> 0f9a292d2045b83a746bf1b2bda385d1385bf3c8
 
 import java.util.List;
 @RequiredArgsConstructor
@@ -45,6 +50,7 @@ public class SecurityConfiguration {
     // }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+<<<<<<< HEAD
        return  http
        .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
@@ -69,18 +75,50 @@ public class SecurityConfiguration {
                 .build();
         
         
+=======
+        http.csrf().disable()
+            .cors() 
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/", "/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/accounts/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/accounts").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/clients/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/clients/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/clients/*/insurances").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/logout/").permitAll()
+                .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) 
+            )
+            .authenticationProvider(authenticationProvider) 
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); 
+>>>>>>> 0f9a292d2045b83a746bf1b2bda385d1385bf3c8
 
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+<<<<<<< HEAD
        
         configuration.setAllowedOrigins(List.of("http://localhost:5173")); 
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization", "Accept"));
         configuration.setAllowedMethods(List.of("HEAD", "OPTIONS","GET", "POST", "PUT", "DELETE")); 
               configuration.setExposedHeaders(List.of("Access_token", "refresh_token"));
               configuration.setAllowCredentials(true);
+=======
+        configuration.setAllowedOrigins(List.of("*"));
+        // configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // configuration.setAllowCredentials(true); 
+
+>>>>>>> 0f9a292d2045b83a746bf1b2bda385d1385bf3c8
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); 
         return source;

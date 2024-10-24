@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
-
 
 @Table(name = "user")
 @Entity
@@ -36,10 +34,10 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-   @Override
-public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(); 
-}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
 
     public String getPassword() {
         return password;
@@ -71,6 +69,7 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
         this.fullName = fullName;
         return this;
     }
+
     public String getEmail() {
         return email;
     }
@@ -84,6 +83,7 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
         this.password = password;
         return this;
     }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -114,6 +114,5 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
     public boolean isEnabled() {
         return true;
     }
-    
 
 }
