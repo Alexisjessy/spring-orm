@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+
 import { useNavigate } from 'react-router-dom';
+import apiClient from './apiClient';
 function SingnIn() {
   const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +17,7 @@ function SingnIn() {
     setError('');
     setSuccessMessage('');
     try {
-      const response = await axios.post('http://localhost:8000/auth/signup', {
+      const response = await apiClient.post('/auth/signup', {
        
         email: email,
         password:password,
@@ -23,15 +25,15 @@ function SingnIn() {
        
 
       });
-      if (response.status === 201) {
-        setSuccessMessage('Ajout de client réussi ! Redirection vers la page liste client...');
+      if (response.data) {
+        setSuccessMessage('Enregistrement réussi ! Redirection vers la page Login...');
         setTimeout(() => {
-          navigate('/client');
+          navigate('/auth/login');
         }, 2000);
       }
-      console.log('Client added:', response.data);
+      console.log('User added:', response.data);
     } catch (error) {
-      console.error('Erreur lors de l’inscription:', error);
+      console.error('Erreur lors de l’enregistrement:', error);
 
       if (error.response && error.response.data && error.response.data.message) {
         setError(error.response.data.message);
