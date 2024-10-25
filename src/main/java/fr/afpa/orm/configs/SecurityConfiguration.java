@@ -49,9 +49,9 @@ public class SecurityConfiguration {
        .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
             .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/users/me").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/clients/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "api/accounts/**").hasAuthority(USER)
+            // .requestMatchers(HttpMethod.GET, "/users/me").permitAll()
+            // .requestMatchers(HttpMethod.GET, "/api/clients/**").permitAll()
+            // .requestMatchers(HttpMethod.GET, "api/accounts/**").hasAuthority(USER)
             .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
           
             .requestMatchers("/users", "/users/**").hasAuthority(USER)
