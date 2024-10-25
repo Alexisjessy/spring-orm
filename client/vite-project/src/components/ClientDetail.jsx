@@ -14,7 +14,7 @@ function ClientDetails() {
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/clients/${clientId}/details`);
+        const response = await apiClient.get(`http://localhost:8000/api/clients/${clientId}/details`);
         setClientDetails(response.data);
         setLoading(false);
       } catch (err) {
@@ -37,19 +37,19 @@ function ClientDetails() {
   // Fonction pour ajouter un compte
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/accounts', {
+      const response = await apiClient.post('/api/accounts', {
         balance: 0,
         client: {
           id: clientId,  
         },
-      });
-
+      })
       if (response.status === 201) {
-        setSuccessMessage('Ajout de compte client réussi ! Redirection vers la page liste client...');
-        setTimeout(() => {
-          navigate('/client');
-        }, 2000);
+        setSuccessMessage('Ajout de compte client réussi !');
+     
       }
+
+      const userUpdated =  await apiClient.get(`/api/clients/${clientId}/details`);
+      setClientDetails(userUpdated.data);
       console.log('Compte ajouté :', response.data);
     } catch (error) {
       console.error('Erreur lors de l’ajout de compte :', error);
@@ -66,27 +66,17 @@ function ClientDetails() {
     e.preventDefault(); 
     try {
      
-      const response = await axios.post(`http://localhost:8000/api/clients/${clientId}/insurances`, {
+      const response = await apiClient.post(`/api/clients/${clientId}/insurances`, {
         name: name,
         
       });
-      apiClient.interceptors.request.use(config => {
-        const token = localStorage.getItem('Token');
-        if (token) {
-          config.headers['Authorization'] = `Bearer ${token}`;
-         
-        }
-        return config;
-      }, (error) => {
-        console.error('Erreur lors de l\'envoi de la requête:', error);
-        return Promise.reject(error);
-      });
-      if (response.status === 201) {
+    
+      if (response.data) {
         setSuccessMessage('Ajout d\'assurance réussi !');
-        setTimeout(() => {
-          navigate('/client');
-        }, 2000);
+      
       }
+      const userUpdated =  await apiClient.get(`/api/clients/${clientId}/details`);
+      setClientDetails(userUpdated.data);
       console.log('Assurance ajoutée :', response.data);
     } catch (error) {
       console.error('Erreur lors de l’ajout d’assurance :', error);

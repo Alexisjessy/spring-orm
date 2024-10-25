@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import apiClient from './apiClient';
 function AddClient() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -15,7 +16,7 @@ function AddClient() {
     setError('');
     setSuccessMessage('');
     try {
-      const response = await axios.post('http://localhost:8000/api/clients', {
+      const response = await apiClient.post('/api/clients', {
         firstName: firstName,
         lastName: lastName,
         email: email,

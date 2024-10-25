@@ -43,7 +43,7 @@ function ClientList() {
     if (selectedClient) {
       try {
         
-        await apiClient.delete(`/clients/${selectedClient}`);
+        await apiClient.delete(`/api/clients/${selectedClient}`);
         setClients(clients.filter((client) => client.id !== selectedClient));
         setConfirmationModalOpen(false);
       } catch (error) {

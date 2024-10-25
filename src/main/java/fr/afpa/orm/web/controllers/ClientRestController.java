@@ -106,6 +106,7 @@ public class ClientRestController {
     }
 
     @PostMapping("/{id}/insurances")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Client> addInsuranceToClient(@PathVariable UUID id, @RequestBody Insurance insurancePost) {
         
         // 1 récupération du client en base de données

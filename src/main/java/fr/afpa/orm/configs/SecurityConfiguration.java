@@ -48,13 +48,15 @@ public class SecurityConfiguration {
        return  http
        .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-            .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
+            .requestMatchers("/auth/**").permitAll()
             // .requestMatchers(HttpMethod.GET, "/users/me").permitAll()
             // .requestMatchers(HttpMethod.GET, "/api/clients/**").permitAll()
-            // .requestMatchers(HttpMethod.GET, "api/accounts/**").hasAuthority(USER)
+            .requestMatchers(HttpMethod.POST, "api/accounts/**").hasAuthority(ADMIN)
+            .requestMatchers(HttpMethod.POST, "api/clients/**").hasAuthority(ADMIN)
+            .requestMatchers(HttpMethod.DELETE, "api/clients/**").hasAuthority(ADMIN)
             .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
           
-            .requestMatchers("/users", "/users/**").hasAuthority(USER)
+            
                 // .requestMatchers("/users/**").permitAll() 
                 // .requestMatchers("/api/clients/**").permitAll()
                 //    .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
